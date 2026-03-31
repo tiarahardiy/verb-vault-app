@@ -948,6 +948,25 @@
         transform: rotate(20deg);
       }
 
+      /* ── FOOTER ── */
+      .app-footer {
+        text-align: center;
+        padding: 24px 32px;
+        border-top: 1px solid var(--border);
+        font-size: 12px;
+        color: var(--text3);
+        font-family: "DM Mono", monospace;
+        line-height: 1.7;
+      }
+      .app-footer a {
+        color: var(--accent);
+        text-decoration: none;
+        transition: opacity 0.2s;
+      }
+      .app-footer a:hover {
+        opacity: 0.75;
+      }
+
       /* ── LIGHT THEME SPECIFIC OVERRIDES ── */
       [data-theme="light"] .verb-item {
         border-bottom-color: rgba(200, 195, 185, 0.5);
@@ -1276,6 +1295,9 @@
           </div>
         </div>
       </div>
+      <footer class="app-footer">
+        © 2026 developed by Tiara Hardiyanti ❤️ built with <a href="https://claude.ai" target="_blank">claude.ai</a> in Surabaya, Indonesia
+      </footer>
     </div>
 
     <!-- TOAST -->
@@ -1662,16 +1684,11 @@
           <div class="card-front">
             <div class="card-hint">Apa arti dari verb ini?</div>
             <div class="card-main-word">${esc(card.base)}</div>
-            ${card.past ? `<div class="card-forms"><span>${esc(card.past)}</span><span>${esc(card.pp || "")}</span></div>` : ""}
           </div>
           <div class="card-back">
             <div class="card-hint">Arti</div>
             <div class="card-meaning">${esc(card.meaning || "(tidak ada arti)")}</div>
-            <div class="card-forms">
-              <span>${esc(card.base)}</span>
-              <span>→ ${esc(card.past || "?")}</span>
-              <span>→ ${esc(card.pp || "?")}</span>
-            </div>
+            ${card.example ? `<div class="card-example">"${esc(card.example)}"</div>` : ""}
           </div>
         </div>
       </div>
