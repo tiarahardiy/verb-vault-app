@@ -1,0 +1,1789 @@
+<!-- @format -->
+
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VerbVault — Daily Verb Tracker</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0d0d0f;
+        --surface: #141417;
+        --surface2: #1c1c21;
+        --surface3: #242429;
+        --border: #2a2a32;
+        --accent: #d4a017;
+        --accent2: #e8752a;
+        --accent3: #3aaa8e;
+        --text: #f0ede8;
+        --text2: #9896a0;
+        --text3: #5a5860;
+        --danger: #e85858;
+        --success: #5bc8af;
+        --radius: 12px;
+        --radius-sm: 8px;
+        --nav-bg: rgba(20, 20, 23, 0.85);
+        --shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+        --card-back-bg: linear-gradient(135deg, #0f1a13, #0d1510);
+        --saturday-bg: linear-gradient(135deg, #1a1008, #1a0c04);
+        --login-grad: radial-gradient(
+          ellipse 80% 60% at 50% 0%,
+          #1a1408 0%,
+          #0d0d0f 70%
+        );
+      }
+
+      :root[data-theme="light"] {
+        --bg: #f5f3ee;
+        --surface: #ffffff;
+        --surface2: #ede9e0;
+        --surface3: #e2ddd3;
+        --border: #d4cfc4;
+        --accent: #b8860b;
+        --accent2: #c45e14;
+        --accent3: #2a8a72;
+        --text: #1a1814;
+        --text2: #6b6760;
+        --text3: #a09c95;
+        --danger: #c0392b;
+        --success: #2a8a72;
+        --nav-bg: rgba(245, 243, 238, 0.88);
+        --shadow: 0 40px 80px rgba(0, 0, 0, 0.12);
+        --card-back-bg: linear-gradient(135deg, #e8f5f0, #d6ede7);
+        --saturday-bg: linear-gradient(135deg, #fdf5e6, #fdecd0);
+        --login-grad: radial-gradient(
+          ellipse 80% 60% at 50% 0%,
+          #fdf0d0 0%,
+          #f5f3ee 70%
+        );
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "DM Sans", sans-serif;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      /* ── NOISE OVERLAY ── */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.035'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 0;
+      }
+
+      /* ── SCREENS ── */
+      .screen {
+        display: none;
+        min-height: 100vh;
+        position: relative;
+        z-index: 1;
+      }
+      .screen.active {
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* ══════════════════════════════
+     LOGIN SCREEN
+  ══════════════════════════════ */
+      #login-screen {
+        align-items: center;
+        justify-content: center;
+        background: var(--login-grad);
+      }
+
+      .login-card {
+        width: min(420px, 90vw);
+        text-align: center;
+        padding: 56px 40px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+        animation: floatIn 0.7s cubic-bezier(0.22, 0.68, 0, 1.2) both;
+      }
+
+      @keyframes floatIn {
+        from {
+          opacity: 0;
+          transform: translateY(32px) scale(0.97);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      .logo-mark {
+        width: 72px;
+        height: 72px;
+        background: var(--accent);
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 24px;
+        font-size: 32px;
+        box-shadow: 0 0 40px rgba(245, 200, 66, 0.3);
+      }
+
+      .login-card h1 {
+        font-family: "Playfair Display", serif;
+        font-size: 36px;
+        font-weight: 900;
+        letter-spacing: -1px;
+        line-height: 1;
+        margin-bottom: 8px;
+      }
+
+      .login-card h1 span {
+        color: var(--accent);
+      }
+
+      .login-tagline {
+        color: var(--text2);
+        font-size: 14px;
+        margin-bottom: 36px;
+        line-height: 1.6;
+      }
+
+      .google-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        width: 100%;
+        padding: 14px 24px;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        color: var(--text);
+        font-family: "DM Sans", sans-serif;
+        font-size: 15px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .google-btn:hover {
+        background: var(--surface3);
+        border-color: var(--accent);
+        box-shadow: 0 0 20px rgba(245, 200, 66, 0.1);
+        transform: translateY(-1px);
+      }
+
+      .google-icon {
+        width: 20px;
+        height: 20px;
+      }
+
+      .login-note {
+        margin-top: 20px;
+        font-size: 12px;
+        color: var(--text3);
+      }
+
+      /* ══════════════════════════════
+     TOP NAV
+  ══════════════════════════════ */
+      .topnav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 32px;
+        background: var(--nav-bg);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .nav-logo {
+        font-family: "Playfair Display", serif;
+        font-size: 22px;
+        font-weight: 900;
+        letter-spacing: -0.5px;
+      }
+      .nav-logo span {
+        color: var(--accent);
+      }
+
+      .nav-right {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .day-badge {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 6px 14px;
+        font-size: 12px;
+        font-family: "DM Mono", monospace;
+        color: var(--text2);
+      }
+
+      .day-badge.saturday {
+        border-color: var(--accent2);
+        color: var(--accent2);
+      }
+
+      .user-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: var(--accent);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--bg);
+        cursor: pointer;
+        position: relative;
+      }
+
+      .user-dropdown {
+        position: absolute;
+        top: 44px;
+        right: 0;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 4px;
+        min-width: 140px;
+        display: none;
+        z-index: 200;
+      }
+      .user-avatar:hover .user-dropdown {
+        display: block;
+      }
+
+      .dropdown-item {
+        padding: 10px 14px;
+        font-size: 13px;
+        cursor: pointer;
+        border-radius: 6px;
+        color: var(--text2);
+      }
+      .dropdown-item:hover {
+        background: var(--surface3);
+        color: var(--text);
+      }
+      .dropdown-item.danger:hover {
+        color: var(--danger);
+      }
+
+      /* ══════════════════════════════
+     MAIN APP
+  ══════════════════════════════ */
+      .app-content {
+        flex: 1;
+        padding: 40px 32px;
+        max-width: 900px;
+        margin: 0 auto;
+        width: 100%;
+      }
+
+      /* ── TABS ── */
+      .tabs {
+        display: flex;
+        gap: 4px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 4px;
+        margin-bottom: 32px;
+        width: fit-content;
+      }
+
+      .tab {
+        padding: 10px 20px;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text2);
+        transition: all 0.2s;
+        border: none;
+        background: none;
+        font-family: "DM Sans", sans-serif;
+      }
+
+      .tab.active {
+        background: var(--surface3);
+        color: var(--text);
+      }
+
+      .tab-panel {
+        display: none;
+      }
+      .tab-panel.active {
+        display: block;
+        animation: fadeUp 0.3s ease both;
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ── SECTION HEADERS ── */
+      .section-header {
+        margin-bottom: 24px;
+      }
+
+      .section-title {
+        font-family: "Playfair Display", serif;
+        font-size: 28px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+        margin-bottom: 6px;
+      }
+
+      .section-subtitle {
+        font-size: 14px;
+        color: var(--text2);
+      }
+
+      /* ── STAT ROW ── */
+      .stat-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-bottom: 32px;
+      }
+
+      .stat-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px;
+      }
+
+      .stat-label {
+        font-size: 11px;
+        color: var(--text3);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 8px;
+      }
+      .stat-value {
+        font-family: "DM Mono", monospace;
+        font-size: 28px;
+        font-weight: 500;
+      }
+      .stat-value.accent {
+        color: var(--accent);
+      }
+      .stat-value.accent2 {
+        color: var(--accent2);
+      }
+      .stat-value.accent3 {
+        color: var(--accent3);
+      }
+
+      /* ── VERB INPUT FORM ── */
+      .verb-form {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 28px;
+        margin-bottom: 24px;
+      }
+
+      .form-title {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .form-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--accent);
+      }
+
+      .verb-inputs {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .verb-row {
+        display: grid;
+        grid-template-columns: 40px 1fr 1fr 1fr 1fr auto;
+        gap: 10px;
+        align-items: center;
+        animation: slideIn 0.3s ease both;
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .row-num {
+        font-family: "DM Mono", monospace;
+        font-size: 12px;
+        color: var(--text3);
+        text-align: center;
+      }
+
+      .verb-input {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 10px 14px;
+        color: var(--text);
+        font-family: "DM Sans", sans-serif;
+        font-size: 14px;
+        outline: none;
+        transition: border-color 0.2s;
+        width: 100%;
+      }
+
+      .verb-input::placeholder {
+        color: var(--text3);
+      }
+      .verb-input:focus {
+        border-color: var(--accent);
+      }
+
+      .input-label {
+        font-size: 10px;
+        color: var(--text3);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin-bottom: 4px;
+      }
+
+      .input-group {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .remove-btn {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        cursor: pointer;
+        color: var(--text3);
+        transition: all 0.2s;
+        font-size: 16px;
+      }
+      .remove-btn:hover {
+        border-color: var(--danger);
+        color: var(--danger);
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        padding: 11px 22px;
+        border-radius: var(--radius-sm);
+        font-family: "DM Sans", sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        transition: all 0.2s;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: var(--bg);
+      }
+      .btn-primary:hover {
+        background: #f7d260;
+        box-shadow: 0 0 20px rgba(245, 200, 66, 0.3);
+      }
+
+      .btn-secondary {
+        background: var(--surface2);
+        color: var(--text);
+        border: 1px solid var(--border);
+      }
+      .btn-secondary:hover {
+        background: var(--surface3);
+      }
+
+      .btn-ghost {
+        background: none;
+        color: var(--text2);
+        border: 1px dashed var(--border);
+      }
+      .btn-ghost:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      /* ── VERB LIST ── */
+      .verb-list {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+
+      .list-header {
+        display: grid;
+        grid-template-columns: 40px 1fr 1fr 1fr 1fr;
+        padding: 12px 20px;
+        background: var(--surface2);
+        border-bottom: 1px solid var(--border);
+        font-size: 11px;
+        color: var(--text3);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        font-weight: 500;
+      }
+
+      .verb-item {
+        display: grid;
+        grid-template-columns: 40px 1fr 1fr 1fr 1fr;
+        padding: 14px 20px;
+        border-bottom: 1px solid rgba(42, 42, 50, 0.5);
+        font-size: 14px;
+        transition: background 0.15s;
+        align-items: center;
+      }
+      .verb-item:hover {
+        background: var(--surface2);
+      }
+      .verb-item:last-child {
+        border-bottom: none;
+      }
+
+      .verb-item-num {
+        font-family: "DM Mono", monospace;
+        font-size: 12px;
+        color: var(--text3);
+      }
+      .verb-base {
+        font-weight: 600;
+      }
+      .verb-col {
+        color: var(--text2);
+        font-family: "DM Mono", monospace;
+        font-size: 13px;
+      }
+      .verb-meaning {
+        color: var(--accent3);
+        font-size: 13px;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: var(--text3);
+      }
+      .empty-state .emoji {
+        font-size: 40px;
+        margin-bottom: 12px;
+      }
+      .empty-state p {
+        font-size: 14px;
+      }
+
+      /* ── SATURDAY SPECIAL ── */
+      .saturday-banner {
+        background: var(--saturday-bg);
+        border: 1px solid var(--accent2);
+        border-radius: var(--radius);
+        padding: 24px 28px;
+        margin-bottom: 28px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .saturday-icon {
+        font-size: 40px;
+      }
+
+      .saturday-banner h2 {
+        font-family: "Playfair Display", serif;
+        font-size: 22px;
+        color: var(--accent2);
+        margin-bottom: 4px;
+      }
+
+      .saturday-banner p {
+        font-size: 13px;
+        color: var(--text2);
+      }
+
+      /* ── FLASHCARD GAME ── */
+      .flashcard-area {
+        text-align: center;
+        padding: 20px;
+      }
+
+      .progress-bar-wrap {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 28px;
+      }
+
+      .progress-bar {
+        flex: 1;
+        height: 6px;
+        background: var(--surface2);
+        border-radius: 999px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--accent), var(--accent2));
+        border-radius: 999px;
+        transition: width 0.4s ease;
+      }
+
+      .progress-text {
+        font-family: "DM Mono", monospace;
+        font-size: 13px;
+        color: var(--text2);
+        white-space: nowrap;
+      }
+
+      .flashcard {
+        width: min(480px, 100%);
+        height: 280px;
+        margin: 0 auto 28px;
+        perspective: 1000px;
+        cursor: pointer;
+      }
+
+      .flashcard-inner {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        transform-style: preserve-3d;
+        transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .flashcard.flipped .flashcard-inner {
+        transform: rotateY(180deg);
+      }
+
+      .card-front,
+      .card-back {
+        position: absolute;
+        inset: 0;
+        backface-visibility: hidden;
+        border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 32px;
+        border: 1px solid var(--border);
+      }
+
+      .card-front {
+        background: var(--surface);
+      }
+
+      .card-back {
+        background: var(--card-back-bg);
+        border-color: var(--accent3);
+        transform: rotateY(180deg);
+      }
+
+      .card-hint {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--text3);
+        margin-bottom: 16px;
+        font-family: "DM Mono", monospace;
+      }
+
+      .card-main-word {
+        font-family: "Playfair Display", serif;
+        font-size: 42px;
+        font-weight: 700;
+        letter-spacing: -1px;
+        margin-bottom: 8px;
+      }
+
+      .card-forms {
+        display: flex;
+        gap: 20px;
+        font-family: "DM Mono", monospace;
+        font-size: 14px;
+        color: var(--text2);
+      }
+
+      .card-meaning {
+        font-size: 22px;
+        color: var(--accent3);
+        font-weight: 500;
+        margin-bottom: 8px;
+      }
+
+      .card-example {
+        font-size: 13px;
+        color: var(--text2);
+        font-style: italic;
+        margin-top: 8px;
+      }
+
+      .flip-hint {
+        font-size: 12px;
+        color: var(--text3);
+        margin-top: 10px;
+      }
+
+      .card-actions {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        margin-bottom: 24px;
+      }
+
+      .btn-know {
+        padding: 12px 28px;
+        background: rgba(91, 200, 175, 0.1);
+        border: 1px solid var(--accent3);
+        border-radius: var(--radius-sm);
+        color: var(--accent3);
+        font-family: "DM Sans", sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .btn-know:hover {
+        background: rgba(91, 200, 175, 0.2);
+      }
+
+      .btn-review {
+        padding: 12px 28px;
+        background: rgba(232, 117, 42, 0.1);
+        border: 1px solid var(--accent2);
+        border-radius: var(--radius-sm);
+        color: var(--accent2);
+        font-family: "DM Sans", sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .btn-review:hover {
+        background: rgba(232, 117, 42, 0.2);
+      }
+
+      /* ── REVIEW TABLE ── */
+      .review-table {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        margin-top: 24px;
+      }
+
+      .review-table-header {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 80px;
+        padding: 12px 20px;
+        background: var(--surface2);
+        border-bottom: 1px solid var(--border);
+        font-size: 11px;
+        color: var(--text3);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+      }
+
+      .review-item {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr 1fr 80px;
+        padding: 14px 20px;
+        border-bottom: 1px solid rgba(42, 42, 50, 0.5);
+        font-size: 13px;
+        align-items: center;
+        transition: background 0.15s;
+      }
+      .review-item:hover {
+        background: var(--surface2);
+      }
+      .review-item:last-child {
+        border-bottom: none;
+      }
+
+      .day-chip {
+        font-size: 11px;
+        padding: 3px 8px;
+        border-radius: 999px;
+        font-family: "DM Mono", monospace;
+        border: 1px solid var(--border);
+        color: var(--text3);
+        width: fit-content;
+      }
+
+      /* ── GAME RESULT ── */
+      .game-result {
+        text-align: center;
+        padding: 40px 20px;
+        animation: fadeUp 0.5s ease both;
+      }
+
+      .result-score {
+        font-family: "Playfair Display", serif;
+        font-size: 80px;
+        font-weight: 900;
+        color: var(--accent);
+        line-height: 1;
+        margin-bottom: 8px;
+      }
+
+      .result-label {
+        font-size: 16px;
+        color: var(--text2);
+        margin-bottom: 24px;
+      }
+
+      /* ══════════════════════════════
+     TOAST
+  ══════════════════════════════ */
+      .toast {
+        position: fixed;
+        bottom: 28px;
+        right: 28px;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 14px 20px;
+        font-size: 14px;
+        color: var(--text);
+        z-index: 9999;
+        transform: translateY(60px);
+        opacity: 0;
+        transition: all 0.3s cubic-bezier(0.22, 0.68, 0, 1.2);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        max-width: 320px;
+      }
+      .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      .toast.success {
+        border-color: var(--accent3);
+      }
+      .toast.error {
+        border-color: var(--danger);
+      }
+
+      .theme-toggle {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.2s;
+        line-height: 1;
+      }
+      .theme-toggle:hover {
+        background: var(--surface3);
+        border-color: var(--accent);
+        transform: rotate(20deg);
+      }
+
+      /* ── LIGHT THEME SPECIFIC OVERRIDES ── */
+      [data-theme="light"] .verb-item {
+        border-bottom-color: rgba(200, 195, 185, 0.5);
+      }
+      [data-theme="light"] .review-item {
+        border-bottom-color: rgba(200, 195, 185, 0.5);
+      }
+      [data-theme="light"] .google-btn:hover {
+        box-shadow: 0 0 20px rgba(180, 140, 10, 0.15);
+      }
+      [data-theme="light"] .btn-primary:hover {
+        background: #c99b10;
+        box-shadow: 0 0 20px rgba(180, 140, 10, 0.25);
+      }
+      [data-theme="light"] .logo-mark {
+        box-shadow: 0 0 40px rgba(180, 140, 10, 0.25);
+      }
+      @media (max-width: 640px) {
+        .app-content {
+          padding: 20px 16px;
+        }
+        .topnav {
+          padding: 12px 16px;
+        }
+        .stat-row {
+          grid-template-columns: 1fr 1fr;
+        }
+        .verb-row {
+          grid-template-columns: 30px 1fr 1fr;
+        }
+        .verb-row .input-group:nth-child(4),
+        .verb-row .input-group:nth-child(5) {
+          display: none;
+        }
+        .list-header,
+        .verb-item {
+          grid-template-columns: 30px 1fr 1fr;
+        }
+        .list-header span:nth-child(n + 4),
+        .verb-item span:nth-child(n + 4) {
+          display: none;
+        }
+        .review-table-header,
+        .review-item {
+          grid-template-columns: 1fr 1fr 80px;
+        }
+        .review-table-header span:nth-child(3),
+        .review-item span:nth-child(3),
+        .review-table-header span:nth-child(4),
+        .review-item span:nth-child(4) {
+          display: none;
+        }
+      }
+    </style>
+
+    <!-- Tambahkan di dalam <head>, sebelum </head> -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+      import {
+        getAuth,
+        GoogleAuthProvider,
+        signInWithPopup,
+        signOut,
+        onAuthStateChanged,
+      } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-auth.js";
+      import {
+        getFirestore,
+        doc,
+        setDoc,
+        getDocs,
+        collection,
+        query,
+        where,
+      } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+
+      // ✅ Ganti dengan firebaseConfig kamu dari Step 2
+      const firebaseConfig = {
+        apiKey: "AIzaSyAuq9UGIq0yW-dXRgQW5wJzh_WxzCN-saA",
+        authDomain: "my-verbvault-app.firebaseapp.com",
+        projectId: "my-verbvault-app",
+        storageBucket: "my-verbvault-app.firebasestorage.app",
+        messagingSenderId: "190729632611",
+        appId: "1:190729632611:web:26d63a6373e5dc34003156",
+        measurementId: "G-46QNSLGSFE",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+      const provider = new GoogleAuthProvider();
+
+      // ── LOGIN ──
+      window.loginWithGoogle = async () => {
+        try {
+          await signInWithPopup(auth, provider);
+        } catch (e) {
+          console.error(e);
+        }
+      };
+
+      // ── LOGOUT ──
+      window.logout = async () => {
+        if (!confirm("Yakin mau keluar?")) return;
+        await signOut(auth);
+      };
+
+      // ── AUTH STATE ──
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          appData.user = {
+            name: user.displayName,
+            initials: user.displayName
+              .split(" ")
+              .map((w) => w[0])
+              .join("")
+              .slice(0, 2)
+              .toUpperCase(),
+            uid: user.uid,
+          };
+          enterApp();
+        } else {
+          document.getElementById("login-screen").classList.add("active");
+          document.getElementById("app-screen").classList.remove("active");
+        }
+      });
+
+      // ── SIMPAN VERB KE FIRESTORE ──
+      window.saveVerbsToCloud = async (verbs) => {
+        const uid = auth.currentUser?.uid;
+        if (!uid) return;
+        for (const v of verbs) {
+          await setDoc(doc(db, "users", uid, "verbs", v.id.toString()), v);
+        }
+      };
+    </script>
+  </head>
+  <body>
+    <!-- ══════════════ LOGIN ══════════════ -->
+    <div id="login-screen" class="screen active">
+      <button
+        id="login-theme-toggle"
+        class="theme-toggle"
+        onclick="toggleTheme()"
+        style="position: absolute; top: 20px; right: 24px; z-index: 10"
+      >
+        🌙
+      </button>
+      <div class="login-card">
+        <div class="logo-mark">📚</div>
+        <h1>Verb<span>Vault</span></h1>
+        <p class="login-tagline">
+          Pelajari 10 verb setiap hari.<br />Sabtu, tantang dirimu dengan
+          flashcard review.
+        </p>
+        <button class="google-btn" onclick="loginWithGoogle()">
+          <svg class="google-icon" viewBox="0 0 24 24">
+            <path
+              fill="#4285F4"
+              d="M23.745 12.27c0-.79-.07-1.54-.19-2.27h-11.3v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82z"
+            />
+            <path
+              fill="#34A853"
+              d="M12.255 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.11-6.73-4.96h-3.98v3.09C3.515 21.3 7.615 24 12.255 24z"
+            />
+            <path
+              fill="#FBBC05"
+              d="M5.525 14.29c-.25-.72-.38-1.49-.38-2.29s.14-1.57.38-2.29V6.62h-3.98a11.86 11.86 0 000 10.76l3.98-3.09z"
+            />
+            <path
+              fill="#EA4335"
+              d="M12.255 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C18.205 1.19 15.495 0 12.255 0c-4.64 0-8.74 2.7-10.71 6.62l3.98 3.09c.95-2.85 3.6-4.96 6.73-4.96z"
+            />
+          </svg>
+          Masuk dengan Google
+        </button>
+        <p class="login-note">Data tersimpan di browser Anda secara lokal</p>
+      </div>
+    </div>
+
+    <!-- ══════════════ APP ══════════════ -->
+    <div id="app-screen" class="screen">
+      <nav class="topnav">
+        <div class="nav-logo">Verb<span>Vault</span></div>
+        <div class="nav-right">
+          <div class="day-badge" id="day-badge">Senin</div>
+          <button
+            class="theme-toggle"
+            id="theme-toggle"
+            onclick="toggleTheme()"
+            title="Ganti tema"
+          >
+            🌙
+          </button>
+          <div class="user-avatar" id="user-avatar">
+            U
+            <div class="user-dropdown">
+              <div class="dropdown-item" onclick="switchDay()">
+                🗓 Ganti Hari (Demo)
+              </div>
+              <div class="dropdown-item danger" onclick="logout()">
+                ↩ Keluar
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      <div class="app-content">
+        <!-- TABS -->
+        <div class="tabs" id="main-tabs">
+          <button class="tab active" onclick="switchTab('input')">
+            📝 Input Hari Ini
+          </button>
+          <button class="tab" onclick="switchTab('history')">📖 Riwayat</button>
+          <button
+            class="tab saturday-tab"
+            onclick="switchTab('saturday')"
+            style="display: none"
+          >
+            🎯 Review Sabtu
+          </button>
+        </div>
+
+        <!-- ── TAB: INPUT ── -->
+        <div id="tab-input" class="tab-panel active">
+          <div class="section-header">
+            <h2 class="section-title" id="input-title">Verbs Hari Ini</h2>
+            <p class="section-subtitle" id="input-subtitle">
+              Tambahkan minimal 10 verb untuk dipelajari
+            </p>
+          </div>
+
+          <div class="stat-row">
+            <div class="stat-card">
+              <div class="stat-label">Hari Ini</div>
+              <div class="stat-value accent" id="stat-today">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Minggu Ini</div>
+              <div class="stat-value accent2" id="stat-week">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Total</div>
+              <div class="stat-value accent3" id="stat-total">0</div>
+            </div>
+          </div>
+
+          <div class="verb-form">
+            <div class="form-title">
+              <div class="form-dot"></div>
+              Tambah Verb Baru
+            </div>
+            <div class="verb-inputs" id="verb-inputs">
+              <!-- rows injected -->
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" onclick="saveVerbs()">
+                💾 Simpan
+              </button>
+              <button class="btn btn-ghost" onclick="addVerbRow()">
+                + Tambah Baris
+              </button>
+            </div>
+          </div>
+
+          <!-- Today's saved verbs -->
+          <div id="today-list-wrap">
+            <div class="form-title" style="margin-bottom: 12px">
+              <div class="form-dot" style="background: var(--accent3)"></div>
+              Sudah Dipelajari Hari Ini
+            </div>
+            <div class="verb-list">
+              <div class="list-header">
+                <span>#</span><span>Base</span><span>Past</span
+                ><span>Past Part.</span><span>Arti</span>
+              </div>
+              <div id="today-list"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── TAB: HISTORY ── -->
+        <div id="tab-history" class="tab-panel">
+          <div class="section-header">
+            <h2 class="section-title">Riwayat Verb</h2>
+            <p class="section-subtitle">Semua verb yang telah kamu pelajari</p>
+          </div>
+          <div class="review-table">
+            <div class="review-table-header">
+              <span>Base Form</span><span>Past Tense</span
+              ><span>Past Participle</span><span>Arti</span><span>Hari</span>
+            </div>
+            <div id="history-list"></div>
+          </div>
+        </div>
+
+        <!-- ── TAB: SATURDAY ── -->
+        <div id="tab-saturday" class="tab-panel">
+          <div class="saturday-banner">
+            <div class="saturday-icon">🎯</div>
+            <div>
+              <h2>Review Sabtu!</h2>
+              <p>Uji semua verb yang kamu pelajari minggu ini</p>
+            </div>
+          </div>
+
+          <div class="tabs" style="margin-bottom: 24px">
+            <button class="tab active" onclick="switchSubTab('review-list')">
+              📋 Daftar Review
+            </button>
+            <button class="tab" onclick="switchSubTab('flashcard')">
+              🃏 Flashcard Game
+            </button>
+          </div>
+
+          <div id="subtab-review-list" class="tab-panel active">
+            <div class="section-header">
+              <h2 class="section-title">Verb Minggu Ini</h2>
+              <p class="section-subtitle" id="review-count-text">Loading...</p>
+            </div>
+            <div class="review-table">
+              <div class="review-table-header">
+                <span>Base Form</span><span>Past Tense</span
+                ><span>Past Participle</span><span>Arti</span><span>Hari</span>
+              </div>
+              <div id="saturday-review-list"></div>
+            </div>
+          </div>
+
+          <div id="subtab-flashcard" class="tab-panel">
+            <div id="flashcard-game"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+      // ════════════════════════════════════
+      // THEME
+      // ════════════════════════════════════
+      function initTheme() {
+        const saved = localStorage.getItem("verbvault_theme") || "dark";
+        applyTheme(saved);
+      }
+
+      function applyTheme(theme) {
+        document.documentElement.setAttribute("data-theme", theme);
+        localStorage.setItem("verbvault_theme", theme);
+        const btn = document.getElementById("theme-toggle");
+        const loginBtn = document.getElementById("login-theme-toggle");
+        const icon = theme === "light" ? "🌙" : "☀️";
+        if (btn) btn.textContent = icon;
+        if (loginBtn) loginBtn.textContent = icon;
+      }
+
+      function toggleTheme() {
+        const current =
+          document.documentElement.getAttribute("data-theme") || "dark";
+        applyTheme(current === "dark" ? "light" : "dark");
+      }
+
+      // ════════════════════════════════════
+      // DATA LAYER (localStorage)
+      // ════════════════════════════════════
+      const STORAGE_KEY = "verbvault_v2";
+      const DAY_NAMES = [
+        "Minggu",
+        "Senin",
+        "Selasa",
+        "Rabu",
+        "Kamis",
+        "Jumat",
+        "Sabtu",
+      ];
+
+      function loadData() {
+        try {
+          return (
+            JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
+              user: null,
+              verbs: [],
+            }
+          );
+        } catch {
+          return { user: null, verbs: [] };
+        }
+      }
+
+      function saveData(data) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+      }
+
+      let appData = loadData();
+      let currentDayIndex = new Date().getDay(); // 0=Sun,6=Sat
+      let gameState = { cards: [], index: 0, known: 0, review: 0 };
+
+      // ════════════════════════════════════
+      // AUTH
+      // ════════════════════════════════════
+      function loginWithGoogle() {
+        // Simulate Google Auth
+        const name = prompt(
+          "Demo: Masukkan nama kamu (simulasi Google Login)",
+          "Budi Santoso",
+        );
+        if (!name) return;
+        appData.user = {
+          name: name.trim(),
+          initials: name
+            .trim()
+            .split(" ")
+            .map((w) => w[0])
+            .join("")
+            .toUpperCase()
+            .slice(0, 2),
+          email: name.toLowerCase().replace(/\s/g, "") + "@gmail.com",
+        };
+        saveData(appData);
+        enterApp();
+      }
+
+      function logout() {
+        if (!confirm("Yakin mau keluar?")) return;
+        appData.user = null;
+        saveData(appData);
+        document.getElementById("login-screen").classList.add("active");
+        document.getElementById("app-screen").classList.remove("active");
+      }
+
+      function enterApp() {
+        document.getElementById("login-screen").classList.remove("active");
+        document.getElementById("app-screen").classList.add("active");
+        document.getElementById("user-avatar").textContent =
+          appData.user.initials;
+        // keep dropdown
+        document.getElementById("user-avatar").innerHTML =
+          appData.user.initials +
+          `<div class="user-dropdown">
+      <div class="dropdown-item" onclick="switchDay()">🗓 Ganti Hari (Demo)</div>
+      <div class="dropdown-item danger" onclick="logout()">↩ Keluar</div>
+    </div>`;
+        // sync theme icon
+        const theme =
+          document.documentElement.getAttribute("data-theme") || "dark";
+        const btn = document.getElementById("theme-toggle");
+        if (btn) btn.textContent = theme === "light" ? "🌙" : "☀️";
+        updateUI();
+      }
+
+      // ════════════════════════════════════
+      // UI
+      // ════════════════════════════════════
+      function updateUI() {
+        const dayName = DAY_NAMES[currentDayIndex];
+        const badge = document.getElementById("day-badge");
+        badge.textContent = dayName;
+        badge.className =
+          "day-badge" + (currentDayIndex === 6 ? " saturday" : "");
+
+        // Saturday tab visibility
+        document.querySelector(".saturday-tab").style.display =
+          currentDayIndex === 6 ? "block" : "none";
+
+        // Stats
+        const todayVerbs = getVerbsForDay(currentDayIndex);
+        const weekVerbs = getVerbsThisWeek();
+        document.getElementById("stat-today").textContent = todayVerbs.length;
+        document.getElementById("stat-week").textContent = weekVerbs.length;
+        document.getElementById("stat-total").textContent =
+          appData.verbs.length;
+
+        // Input area
+        document.getElementById("input-title").textContent =
+          `Verbs — ${dayName}`;
+        document.getElementById("input-subtitle").textContent =
+          `Tambahkan minimal 10 verb untuk dipelajari hari ini (sudah: ${todayVerbs.length})`;
+
+        // Init input rows
+        if (document.querySelectorAll(".verb-row").length === 0) {
+          initVerbRows();
+        }
+
+        renderTodayList();
+        renderHistoryList();
+        renderSaturdayReview();
+      }
+
+      function switchDay() {
+        currentDayIndex = parseInt(
+          prompt("Pilih hari (0=Minggu,1=Senin,...,6=Sabtu)", currentDayIndex),
+        );
+        if (isNaN(currentDayIndex)) currentDayIndex = new Date().getDay();
+        currentDayIndex = Math.max(0, Math.min(6, currentDayIndex));
+        // reset input rows
+        document.getElementById("verb-inputs").innerHTML = "";
+        initVerbRows();
+        updateUI();
+        // If going to saturday, make sure we switch to that tab
+        if (currentDayIndex === 6) switchTab("saturday");
+        else switchTab("input");
+      }
+
+      // ════════════════════════════════════
+      // TABS
+      // ════════════════════════════════════
+      function switchTab(id) {
+        document.querySelectorAll("#main-tabs .tab").forEach((t, i) => {
+          const ids = ["input", "history", "saturday"];
+          t.classList.toggle("active", ids[i] === id);
+        });
+        ["input", "history", "saturday"].forEach((p) => {
+          document
+            .getElementById("tab-" + p)
+            .classList.toggle("active", p === id);
+        });
+        if (id === "saturday") renderSaturdayReview();
+      }
+
+      function switchSubTab(id) {
+        document.querySelectorAll("#tab-saturday .tab").forEach((t, i) => {
+          const ids = ["review-list", "flashcard"];
+          t.classList.toggle("active", ids[i] === id);
+        });
+        ["review-list", "flashcard"].forEach((p) => {
+          document
+            .getElementById("subtab-" + p)
+            .classList.toggle("active", p === id);
+        });
+        if (id === "flashcard") startFlashcardGame();
+      }
+
+      // ════════════════════════════════════
+      // VERB INPUT
+      // ════════════════════════════════════
+      function initVerbRows() {
+        for (let i = 0; i < 10; i++) addVerbRow();
+      }
+
+      function addVerbRow() {
+        const wrap = document.getElementById("verb-inputs");
+        const idx = wrap.querySelectorAll(".verb-row").length + 1;
+        const row = document.createElement("div");
+        row.className = "verb-row";
+        row.innerHTML = `
+    <div class="row-num">${String(idx).padStart(2, "0")}</div>
+    <div class="input-group">
+      <div class="input-label">Base</div>
+      <input class="verb-input base-input" placeholder="go" />
+    </div>
+    <div class="input-group">
+      <div class="input-label">Past</div>
+      <input class="verb-input past-input" placeholder="went" />
+    </div>
+    <div class="input-group">
+      <div class="input-label">Past Part.</div>
+      <input class="verb-input pp-input" placeholder="gone" />
+    </div>
+    <div class="input-group">
+      <div class="input-label">Arti</div>
+      <input class="verb-input meaning-input" placeholder="pergi" />
+    </div>
+    <button class="remove-btn" onclick="this.closest('.verb-row').remove()">×</button>
+  `;
+        wrap.appendChild(row);
+      }
+
+      function saveVerbs() {
+        const rows = document.querySelectorAll(".verb-row");
+        let added = 0;
+        rows.forEach((row) => {
+          const base = row.querySelector(".base-input").value.trim();
+          const past = row.querySelector(".past-input").value.trim();
+          const pp = row.querySelector(".pp-input").value.trim();
+          const meaning = row.querySelector(".meaning-input").value.trim();
+          if (!base) return;
+
+          // Check duplicate for today
+          const exists = appData.verbs.some(
+            (v) =>
+              v.base.toLowerCase() === base.toLowerCase() &&
+              v.day === currentDayIndex,
+          );
+          if (exists) return;
+
+          appData.verbs.push({
+            id: Date.now() + Math.random(),
+            base,
+            past,
+            pp,
+            meaning,
+            day: currentDayIndex,
+            dayName: DAY_NAMES[currentDayIndex],
+            addedAt: new Date().toISOString(),
+            weekKey: getWeekKey(),
+          });
+          added++;
+        });
+
+        if (added === 0) {
+          showToast("Tidak ada verb baru yang valid", "error");
+          return;
+        }
+        saveData(appData);
+        // Clear inputs
+        document.getElementById("verb-inputs").innerHTML = "";
+        initVerbRows();
+        updateUI();
+        showToast(`✅ ${added} verb berhasil disimpan!`, "success");
+      }
+
+      // ════════════════════════════════════
+      // RENDER LISTS
+      // ════════════════════════════════════
+      function renderTodayList() {
+        const verbs = getVerbsForDay(currentDayIndex);
+        const el = document.getElementById("today-list");
+        if (verbs.length === 0) {
+          el.innerHTML = `<div class="empty-state"><div class="emoji">🌱</div><p>Belum ada verb hari ini. Yuk tambah!</p></div>`;
+          return;
+        }
+        el.innerHTML = verbs
+          .map(
+            (v, i) => `
+    <div class="verb-item">
+      <span class="verb-item-num">${String(i + 1).padStart(2, "0")}</span>
+      <span class="verb-base">${esc(v.base)}</span>
+      <span class="verb-col">${esc(v.past || "—")}</span>
+      <span class="verb-col">${esc(v.pp || "—")}</span>
+      <span class="verb-meaning">${esc(v.meaning || "—")}</span>
+    </div>
+  `,
+          )
+          .join("");
+      }
+
+      function renderHistoryList() {
+        const el = document.getElementById("history-list");
+        if (appData.verbs.length === 0) {
+          el.innerHTML = `<div class="empty-state"><div class="emoji">📭</div><p>Belum ada riwayat verb</p></div>`;
+          return;
+        }
+        const sorted = [...appData.verbs].reverse();
+        el.innerHTML = sorted
+          .map(
+            (v) => `
+    <div class="review-item">
+      <span class="verb-base">${esc(v.base)}</span>
+      <span class="verb-col">${esc(v.past || "—")}</span>
+      <span class="verb-col">${esc(v.pp || "—")}</span>
+      <span class="verb-meaning">${esc(v.meaning || "—")}</span>
+      <span><div class="day-chip">${esc(v.dayName || "?")}</div></span>
+    </div>
+  `,
+          )
+          .join("");
+      }
+
+      function renderSaturdayReview() {
+        const verbs = getVerbsThisWeek();
+        document.getElementById("review-count-text").textContent =
+          `${verbs.length} verb dipelajari minggu ini`;
+        const el = document.getElementById("saturday-review-list");
+        if (verbs.length === 0) {
+          el.innerHTML = `<div class="empty-state"><div class="emoji">😅</div><p>Belum ada verb minggu ini untuk direview</p></div>`;
+          return;
+        }
+        el.innerHTML = verbs
+          .map(
+            (v) => `
+    <div class="review-item">
+      <span class="verb-base">${esc(v.base)}</span>
+      <span class="verb-col">${esc(v.past || "—")}</span>
+      <span class="verb-col">${esc(v.pp || "—")}</span>
+      <span class="verb-meaning">${esc(v.meaning || "—")}</span>
+      <span><div class="day-chip">${esc(v.dayName || "?")}</div></span>
+    </div>
+  `,
+          )
+          .join("");
+      }
+
+      // ════════════════════════════════════
+      // FLASHCARD GAME
+      // ════════════════════════════════════
+      function startFlashcardGame() {
+        const weekVerbs = getVerbsThisWeek();
+        if (weekVerbs.length === 0) {
+          document.getElementById("flashcard-game").innerHTML =
+            `<div class="empty-state"><div class="emoji">🃏</div><p>Belum ada verb minggu ini untuk dimainkan</p></div>`;
+          return;
+        }
+        gameState = {
+          cards: shuffle([...weekVerbs]),
+          index: 0,
+          known: 0,
+          review: 0,
+        };
+        renderFlashcard();
+      }
+
+      function renderFlashcard() {
+        const area = document.getElementById("flashcard-game");
+        const { cards, index } = gameState;
+
+        if (index >= cards.length) {
+          renderGameResult();
+          return;
+        }
+
+        const card = cards[index];
+        const pct = Math.round((index / cards.length) * 100);
+
+        area.innerHTML = `
+    <div class="flashcard-area">
+      <div class="progress-bar-wrap">
+        <div class="progress-bar">
+          <div class="progress-fill" style="width:${pct}%"></div>
+        </div>
+        <div class="progress-text">${index}/${cards.length}</div>
+      </div>
+
+      <div class="flashcard" id="fc" onclick="flipCard()">
+        <div class="flashcard-inner">
+          <div class="card-front">
+            <div class="card-hint">Apa arti dari verb ini?</div>
+            <div class="card-main-word">${esc(card.base)}</div>
+            ${card.past ? `<div class="card-forms"><span>${esc(card.past)}</span><span>${esc(card.pp || "")}</span></div>` : ""}
+          </div>
+          <div class="card-back">
+            <div class="card-hint">Arti</div>
+            <div class="card-meaning">${esc(card.meaning || "(tidak ada arti)")}</div>
+            <div class="card-forms">
+              <span>${esc(card.base)}</span>
+              <span>→ ${esc(card.past || "?")}</span>
+              <span>→ ${esc(card.pp || "?")}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="flip-hint">Klik kartu untuk melihat jawaban 👆</p>
+
+      <div class="card-actions">
+        <button class="btn-review" onclick="cardAnswer(false)">🔄 Perlu Review</button>
+        <button class="btn-know"   onclick="cardAnswer(true)">✓ Tahu!</button>
+      </div>
+    </div>
+  `;
+      }
+
+      function flipCard() {
+        document.getElementById("fc")?.classList.toggle("flipped");
+      }
+
+      function cardAnswer(knew) {
+        if (knew) gameState.known++;
+        else gameState.review++;
+        gameState.index++;
+        renderFlashcard();
+      }
+
+      function renderGameResult() {
+        const { known, cards } = gameState;
+        const pct = Math.round((known / cards.length) * 100);
+        const msg =
+          pct >= 80
+            ? "🔥 Luar biasa!"
+            : pct >= 50
+              ? "💪 Terus semangat!"
+              : "📚 Yuk belajar lagi!";
+
+        document.getElementById("flashcard-game").innerHTML = `
+    <div class="game-result">
+      <div class="result-score">${pct}%</div>
+      <div class="result-label">${known} dari ${cards.length} verb kamu kuasai · ${msg}</div>
+      <div class="form-actions" style="justify-content:center">
+        <button class="btn btn-primary" onclick="startFlashcardGame()">🔄 Main Lagi</button>
+        <button class="btn btn-secondary" onclick="switchSubTab('review-list')">📋 Lihat Daftar</button>
+      </div>
+    </div>
+  `;
+      }
+
+      // ════════════════════════════════════
+      // HELPERS
+      // ════════════════════════════════════
+      function getVerbsForDay(dayIdx) {
+        return appData.verbs.filter(
+          (v) => v.day === dayIdx && v.weekKey === getWeekKey(),
+        );
+      }
+
+      function getVerbsThisWeek() {
+        return appData.verbs.filter((v) => v.weekKey === getWeekKey());
+      }
+
+      function getWeekKey() {
+        // ISO week key: YYYY-Wxx
+        const d = new Date();
+        const dow = d.getDay() || 7;
+        d.setDate(d.getDate() + 4 - dow);
+        const year = d.getFullYear();
+        const week = Math.ceil(((d - new Date(year, 0, 1)) / 86400000 + 1) / 7);
+        return `${year}-W${String(week).padStart(2, "0")}`;
+      }
+
+      function shuffle(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+      }
+
+      function esc(s) {
+        return String(s || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
+
+      let toastTimer;
+      function showToast(msg, type = "") {
+        clearTimeout(toastTimer);
+        const el = document.getElementById("toast");
+        el.textContent = msg;
+        el.className = "toast show " + type;
+        toastTimer = setTimeout(() => el.classList.remove("show"), 3000);
+      }
+
+      // ════════════════════════════════════
+      // INIT
+      // ════════════════════════════════════
+      initTheme();
+      if (appData.user) {
+        enterApp();
+      } else {
+        document.getElementById("login-screen").classList.add("active");
+      }
+    </script>
+  </body>
+</html>
