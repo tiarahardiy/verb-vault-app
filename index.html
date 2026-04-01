@@ -440,7 +440,7 @@
 
       .verb-row {
         display: grid;
-        grid-template-columns: 40px 1fr 1fr 2fr auto;
+        grid-template-columns: 40px 1fr 1fr 1fr 1fr auto;
         gap: 10px;
         align-items: center;
         animation: slideIn 0.3s ease both;
@@ -572,7 +572,7 @@
 
       .list-header {
         display: grid;
-        grid-template-columns: 40px 1fr 1fr 2fr;
+        grid-template-columns: 40px 1fr 1fr 1fr 1fr;
         padding: 12px 20px;
         background: var(--surface2);
         border-bottom: 1px solid var(--border);
@@ -585,7 +585,7 @@
 
       .verb-item {
         display: grid;
-        grid-template-columns: 40px 1fr 1fr 2fr;
+        grid-template-columns: 40px 1fr 1fr 1fr 1fr;
         padding: 14px 20px;
         border-bottom: 1px solid rgba(42, 42, 50, 0.5);
         font-size: 14px;
@@ -615,11 +615,6 @@
       .verb-meaning {
         color: var(--accent3);
         font-size: 13px;
-      }
-      .verb-example {
-        color: var(--text2);
-        font-size: 12px;
-        font-style: italic;
       }
 
       .empty-state {
@@ -837,7 +832,7 @@
 
       .review-table-header {
         display: grid;
-        grid-template-columns: 1fr 1fr 2fr 80px;
+        grid-template-columns: 1fr 1fr 1fr 1fr 80px;
         padding: 12px 20px;
         background: var(--surface2);
         border-bottom: 1px solid var(--border);
@@ -849,7 +844,7 @@
 
       .review-item {
         display: grid;
-        grid-template-columns: 1fr 1fr 2fr 80px;
+        grid-template-columns: 1fr 1fr 1fr 1fr 80px;
         padding: 14px 20px;
         border-bottom: 1px solid rgba(42, 42, 50, 0.5);
         font-size: 13px;
@@ -948,23 +943,266 @@
         transform: rotate(20deg);
       }
 
-      /* ── FOOTER ── */
-      .app-footer {
-        text-align: center;
-        padding: 24px 32px;
-        border-top: 1px solid var(--border);
+      /* ══════════════════════════════
+     STREAK & CALENDAR
+  ══════════════════════════════ */
+      .streak-banner {
+        background: linear-gradient(135deg, var(--surface2), var(--surface));
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px 24px;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+      }
+
+      .streak-left {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .streak-flame {
+        font-size: 40px;
+        animation: flamePulse 2s ease-in-out infinite;
+        line-height: 1;
+      }
+
+      @keyframes flamePulse {
+        0%,
+        100% {
+          transform: scale(1) rotate(-3deg);
+        }
+        50% {
+          transform: scale(1.12) rotate(3deg);
+        }
+      }
+
+      .streak-info h3 {
+        font-family: "Playfair Display", serif;
+        font-size: 26px;
+        font-weight: 900;
+        letter-spacing: -1px;
+        line-height: 1;
+      }
+      .streak-info h3 span {
+        color: var(--accent2);
+      }
+      .streak-info p {
         font-size: 12px;
-        color: var(--text3);
+        color: var(--text2);
+        margin-top: 2px;
+      }
+
+      .streak-stats {
+        display: flex;
+        gap: 20px;
+      }
+      .streak-stat {
+        text-align: center;
+      }
+      .streak-stat-val {
         font-family: "DM Mono", monospace;
-        line-height: 1.7;
+        font-size: 20px;
+        font-weight: 500;
+        color: var(--accent3);
       }
-      .app-footer a {
+      .streak-stat-label {
+        font-size: 10px;
+        color: var(--text3);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+      }
+
+      /* ── CALENDAR ── */
+      .calendar-wrap {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 24px;
+        margin-bottom: 24px;
+      }
+
+      .cal-nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+
+      .cal-title {
+        font-family: "Playfair Display", serif;
+        font-size: 20px;
+        font-weight: 700;
+      }
+
+      .cal-nav-btn {
+        width: 34px;
+        height: 34px;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        color: var(--text2);
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+      }
+      .cal-nav-btn:hover {
+        background: var(--surface3);
+        color: var(--text);
+        border-color: var(--accent);
+      }
+
+      .cal-dow-row {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 4px;
+        margin-bottom: 6px;
+      }
+      .cal-dow {
+        text-align: center;
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--text3);
+        padding: 4px 0;
+      }
+
+      .cal-grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 4px;
+      }
+
+      .cal-day {
+        aspect-ratio: 1;
+        border-radius: var(--radius-sm);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        cursor: default;
+        position: relative;
+        transition: transform 0.15s;
+        min-height: 48px;
+      }
+
+      .cal-day.other-month {
+        opacity: 0.25;
+      }
+
+      .cal-day.has-verbs {
+        background: rgba(58, 170, 142, 0.12);
+        border: 1px solid rgba(58, 170, 142, 0.3);
+      }
+      .cal-day.has-verbs:hover {
+        transform: scale(1.06);
+        cursor: pointer;
+      }
+
+      .cal-day.missed {
+        background: rgba(232, 88, 88, 0.07);
+        border: 1px solid rgba(232, 88, 88, 0.2);
+      }
+
+      .cal-day.today-marker {
+        border: 2px solid var(--accent) !important;
+      }
+
+      .cal-day.future {
+        opacity: 0.4;
+      }
+
+      .cal-date-num {
+        font-family: "DM Mono", monospace;
+        font-size: 11px;
+        color: var(--text3);
+        line-height: 1;
+        margin-bottom: 2px;
+      }
+      .cal-day.has-verbs .cal-date-num {
+        color: var(--accent3);
+        font-weight: 600;
+      }
+      .cal-day.today-marker .cal-date-num {
         color: var(--accent);
-        text-decoration: none;
-        transition: opacity 0.2s;
+        font-weight: 700;
       }
-      .app-footer a:hover {
-        opacity: 0.75;
+
+      .cal-emoji {
+        font-size: 18px;
+        line-height: 1;
+      }
+
+      .cal-verb-count {
+        font-size: 9px;
+        color: var(--accent3);
+        font-family: "DM Mono", monospace;
+        margin-top: 1px;
+      }
+
+      /* ── DAY DETAIL POPUP ── */
+      .day-detail {
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 16px 20px;
+        margin-top: 12px;
+        animation: fadeUp 0.25s ease both;
+      }
+      .day-detail h4 {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .day-detail-verbs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .verb-pill {
+        background: var(--surface3);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 4px 12px;
+        font-size: 12px;
+        font-family: "DM Mono", monospace;
+        color: var(--text2);
+      }
+      .verb-pill span {
+        color: var(--accent3);
+        margin-left: 4px;
+      }
+
+      /* ── HEATMAP LEGEND ── */
+      .cal-legend {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-top: 16px;
+        flex-wrap: wrap;
+      }
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        color: var(--text3);
+      }
+      .legend-dot {
+        width: 14px;
+        height: 14px;
+        border-radius: 4px;
       }
 
       /* ── LIGHT THEME SPECIFIC OVERRIDES ── */
@@ -997,7 +1235,8 @@
         .verb-row {
           grid-template-columns: 30px 1fr 1fr;
         }
-        .verb-row .input-group:nth-child(4) {
+        .verb-row .input-group:nth-child(4),
+        .verb-row .input-group:nth-child(5) {
           display: none;
         }
         .list-header,
@@ -1013,7 +1252,9 @@
           grid-template-columns: 1fr 1fr 80px;
         }
         .review-table-header span:nth-child(3),
-        .review-item span:nth-child(3) {
+        .review-item span:nth-child(3),
+        .review-table-header span:nth-child(4),
+        .review-item span:nth-child(4) {
           display: none;
         }
       }
@@ -1177,6 +1418,9 @@
           <button class="tab active" onclick="switchTab('input')">
             📝 Input Hari Ini
           </button>
+          <button class="tab" onclick="switchTab('calendar')">
+            📅 Kalender
+          </button>
           <button class="tab" onclick="switchTab('history')">📖 Riwayat</button>
           <button
             class="tab saturday-tab"
@@ -1237,11 +1481,66 @@
             </div>
             <div class="verb-list">
               <div class="list-header">
-                <span>#</span><span>Verb</span><span>Arti</span><span>Contoh Kalimat</span>
+                <span>#</span><span>Base</span><span>Past</span
+                ><span>Past Part.</span><span>Arti</span>
               </div>
               <div id="today-list"></div>
             </div>
           </div>
+        </div>
+
+        <!-- ── TAB: CALENDAR ── -->
+        <div id="tab-calendar" class="tab-panel">
+          <div id="streak-banner-wrap"></div>
+
+          <div class="calendar-wrap">
+            <div class="cal-nav">
+              <button class="cal-nav-btn" onclick="calPrev()">‹</button>
+              <div class="cal-title" id="cal-title">Maret 2026</div>
+              <button class="cal-nav-btn" onclick="calNext()">›</button>
+            </div>
+            <div class="cal-dow-row">
+              <div class="cal-dow">Min</div>
+              <div class="cal-dow">Sen</div>
+              <div class="cal-dow">Sel</div>
+              <div class="cal-dow">Rab</div>
+              <div class="cal-dow">Kam</div>
+              <div class="cal-dow">Jum</div>
+              <div class="cal-dow">Sab</div>
+            </div>
+            <div class="cal-grid" id="cal-grid"></div>
+            <div class="cal-legend">
+              <div class="legend-item">
+                <div
+                  class="legend-dot"
+                  style="
+                    background: rgba(58, 170, 142, 0.25);
+                    border: 1px solid rgba(58, 170, 142, 0.4);
+                  "
+                ></div>
+                Ada verb ✅
+              </div>
+              <div class="legend-item">
+                <div
+                  class="legend-dot"
+                  style="
+                    background: rgba(232, 88, 88, 0.1);
+                    border: 1px solid rgba(232, 88, 88, 0.3);
+                  "
+                ></div>
+                Tidak ada verb 😢
+              </div>
+              <div class="legend-item">
+                <div
+                  class="legend-dot"
+                  style="border: 2px solid var(--accent)"
+                ></div>
+                Hari ini
+              </div>
+            </div>
+          </div>
+
+          <div id="day-detail-wrap"></div>
         </div>
 
         <!-- ── TAB: HISTORY ── -->
@@ -1252,7 +1551,8 @@
           </div>
           <div class="review-table">
             <div class="review-table-header">
-              <span>Verb</span><span>Arti</span><span>Contoh Kalimat</span><span>Hari</span>
+              <span>Base Form</span><span>Past Tense</span
+              ><span>Past Participle</span><span>Arti</span><span>Hari</span>
             </div>
             <div id="history-list"></div>
           </div>
@@ -1284,7 +1584,8 @@
             </div>
             <div class="review-table">
               <div class="review-table-header">
-                <span>Verb</span><span>Arti</span><span>Contoh Kalimat</span><span>Hari</span>
+                <span>Base Form</span><span>Past Tense</span
+                ><span>Past Participle</span><span>Arti</span><span>Hari</span>
               </div>
               <div id="saturday-review-list"></div>
             </div>
@@ -1295,9 +1596,6 @@
           </div>
         </div>
       </div>
-      <footer class="app-footer">
-        © 2026 developed by Tiara Hardiyanti ❤️ built with <a href="https://claude.ai" target="_blank">claude.ai</a> in Surabaya, Indonesia
-      </footer>
     </div>
 
     <!-- TOAST -->
@@ -1474,15 +1772,16 @@
       // ════════════════════════════════════
       function switchTab(id) {
         document.querySelectorAll("#main-tabs .tab").forEach((t, i) => {
-          const ids = ["input", "history", "saturday"];
+          const ids = ["input", "calendar", "history", "saturday"];
           t.classList.toggle("active", ids[i] === id);
         });
-        ["input", "history", "saturday"].forEach((p) => {
+        ["input", "calendar", "history", "saturday"].forEach((p) => {
           document
             .getElementById("tab-" + p)
             .classList.toggle("active", p === id);
         });
         if (id === "saturday") renderSaturdayReview();
+        if (id === "calendar") renderCalendar();
       }
 
       function switchSubTab(id) {
@@ -1513,16 +1812,20 @@
         row.innerHTML = `
     <div class="row-num">${String(idx).padStart(2, "0")}</div>
     <div class="input-group">
-      <div class="input-label">Verb</div>
+      <div class="input-label">Base</div>
       <input class="verb-input base-input" placeholder="go" />
+    </div>
+    <div class="input-group">
+      <div class="input-label">Past</div>
+      <input class="verb-input past-input" placeholder="went" />
+    </div>
+    <div class="input-group">
+      <div class="input-label">Past Part.</div>
+      <input class="verb-input pp-input" placeholder="gone" />
     </div>
     <div class="input-group">
       <div class="input-label">Arti</div>
       <input class="verb-input meaning-input" placeholder="pergi" />
-    </div>
-    <div class="input-group">
-      <div class="input-label">Contoh Kalimat <span style="color:var(--text3);font-size:9px">(opsional)</span></div>
-      <input class="verb-input example-input" placeholder="I go to school every day." />
     </div>
     <button class="remove-btn" onclick="this.closest('.verb-row').remove()">×</button>
   `;
@@ -1534,8 +1837,9 @@
         let added = 0;
         rows.forEach((row) => {
           const base = row.querySelector(".base-input").value.trim();
+          const past = row.querySelector(".past-input").value.trim();
+          const pp = row.querySelector(".pp-input").value.trim();
           const meaning = row.querySelector(".meaning-input").value.trim();
-          const example = row.querySelector(".example-input").value.trim();
           if (!base) return;
 
           // Check duplicate for today
@@ -1549,11 +1853,13 @@
           appData.verbs.push({
             id: Date.now() + Math.random(),
             base,
+            past,
+            pp,
             meaning,
-            example,
             day: currentDayIndex,
             dayName: DAY_NAMES[currentDayIndex],
             addedAt: new Date().toISOString(),
+            dateKey: new Date().toISOString().slice(0, 10),
             weekKey: getWeekKey(),
           });
           added++;
@@ -1587,8 +1893,9 @@
     <div class="verb-item">
       <span class="verb-item-num">${String(i + 1).padStart(2, "0")}</span>
       <span class="verb-base">${esc(v.base)}</span>
+      <span class="verb-col">${esc(v.past || "—")}</span>
+      <span class="verb-col">${esc(v.pp || "—")}</span>
       <span class="verb-meaning">${esc(v.meaning || "—")}</span>
-      <span class="verb-example">${esc(v.example || "—")}</span>
     </div>
   `,
           )
@@ -1607,8 +1914,9 @@
             (v) => `
     <div class="review-item">
       <span class="verb-base">${esc(v.base)}</span>
+      <span class="verb-col">${esc(v.past || "—")}</span>
+      <span class="verb-col">${esc(v.pp || "—")}</span>
       <span class="verb-meaning">${esc(v.meaning || "—")}</span>
-      <span class="verb-example">${esc(v.example || "—")}</span>
       <span><div class="day-chip">${esc(v.dayName || "?")}</div></span>
     </div>
   `,
@@ -1630,8 +1938,9 @@
             (v) => `
     <div class="review-item">
       <span class="verb-base">${esc(v.base)}</span>
+      <span class="verb-col">${esc(v.past || "—")}</span>
+      <span class="verb-col">${esc(v.pp || "—")}</span>
       <span class="verb-meaning">${esc(v.meaning || "—")}</span>
-      <span class="verb-example">${esc(v.example || "—")}</span>
       <span><div class="day-chip">${esc(v.dayName || "?")}</div></span>
     </div>
   `,
@@ -1684,11 +1993,16 @@
           <div class="card-front">
             <div class="card-hint">Apa arti dari verb ini?</div>
             <div class="card-main-word">${esc(card.base)}</div>
+            ${card.past ? `<div class="card-forms"><span>${esc(card.past)}</span><span>${esc(card.pp || "")}</span></div>` : ""}
           </div>
           <div class="card-back">
             <div class="card-hint">Arti</div>
             <div class="card-meaning">${esc(card.meaning || "(tidak ada arti)")}</div>
-            ${card.example ? `<div class="card-example">"${esc(card.example)}"</div>` : ""}
+            <div class="card-forms">
+              <span>${esc(card.base)}</span>
+              <span>→ ${esc(card.past || "?")}</span>
+              <span>→ ${esc(card.pp || "?")}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -1733,6 +2047,276 @@
       </div>
     </div>
   `;
+      }
+
+      // ════════════════════════════════════
+      // CALENDAR & STREAK
+      // ════════════════════════════════════
+      let calYear = new Date().getFullYear();
+      let calMonth = new Date().getMonth(); // 0-indexed
+      let selectedDayKey = null;
+
+      const MONTH_NAMES_ID = [
+        "Januari",
+        "Februari",
+        "Maret",
+        "April",
+        "Mei",
+        "Juni",
+        "Juli",
+        "Agustus",
+        "September",
+        "Oktober",
+        "November",
+        "Desember",
+      ];
+
+      function dateKey(y, m, d) {
+        return `${y}-${String(m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+      }
+
+      // Build a map: dateKey → verb[]
+      function buildDateMap() {
+        const map = {};
+        appData.verbs.forEach((v) => {
+          const key = v.dateKey || v.addedAt?.slice(0, 10);
+          if (!key) return;
+          if (!map[key]) map[key] = [];
+          map[key].push(v);
+        });
+        return map;
+      }
+
+      // Calculate current streak
+      function calcStreak() {
+        const map = buildDateMap();
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        let streak = 0;
+        let longest = 0;
+        let cur = 0;
+        let d = new Date(today);
+        // Check if today has verbs; if not start from yesterday
+        const todayKey = dateKey(d.getFullYear(), d.getMonth(), d.getDate());
+        if (!map[todayKey]) d.setDate(d.getDate() - 1);
+
+        // Count current streak backwards
+        while (true) {
+          const k = dateKey(d.getFullYear(), d.getMonth(), d.getDate());
+          if (map[k] && map[k].length > 0) {
+            streak++;
+            d.setDate(d.getDate() - 1);
+          } else break;
+        }
+
+        // Count longest streak
+        const allKeys = Object.keys(map)
+          .filter((k) => map[k].length > 0)
+          .sort();
+        cur = 0;
+        for (let i = 0; i < allKeys.length; i++) {
+          if (i === 0) {
+            cur = 1;
+          } else {
+            const prev = new Date(allKeys[i - 1]);
+            const curr = new Date(allKeys[i]);
+            const diff = (curr - prev) / 86400000;
+            cur = diff === 1 ? cur + 1 : 1;
+          }
+          if (cur > longest) longest = cur;
+        }
+
+        const totalDays = new Set(Object.keys(map)).size;
+        return { streak, longest, totalDays };
+      }
+
+      function renderStreakBanner() {
+        const { streak, longest, totalDays } = calcStreak();
+        const el = document.getElementById("streak-banner-wrap");
+        const flameEmoji = streak === 0 ? "💤" : streak >= 7 ? "🔥" : "🌟";
+        const msg =
+          streak === 0
+            ? "Belum ada streak"
+            : streak === 1
+              ? "1 hari berturut-turut!"
+              : `${streak} hari berturut-turut!`;
+        el.innerHTML = `
+    <div class="streak-banner">
+      <div class="streak-left">
+        <div class="streak-flame">${flameEmoji}</div>
+        <div class="streak-info">
+          <h3><span>${streak}</span> Hari</h3>
+          <p>${msg}</p>
+        </div>
+      </div>
+      <div class="streak-stats">
+        <div class="streak-stat">
+          <div class="streak-stat-val">${longest}</div>
+          <div class="streak-stat-label">Rekor</div>
+        </div>
+        <div class="streak-stat">
+          <div class="streak-stat-val">${totalDays}</div>
+          <div class="streak-stat-label">Hari Aktif</div>
+        </div>
+        <div class="streak-stat">
+          <div class="streak-stat-val">${appData.verbs.length}</div>
+          <div class="streak-stat-label">Total Verb</div>
+        </div>
+      </div>
+    </div>
+  `;
+      }
+
+      function renderCalendar() {
+        renderStreakBanner();
+        const map = buildDateMap();
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        document.getElementById("cal-title").textContent =
+          `${MONTH_NAMES_ID[calMonth]} ${calYear}`;
+
+        const firstDay = new Date(calYear, calMonth, 1).getDay(); // 0=Sun
+        const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+        const daysInPrev = new Date(calYear, calMonth, 0).getDate();
+
+        let cells = [];
+
+        // Prev month filler
+        for (let i = firstDay - 1; i >= 0; i--) {
+          cells.push({
+            day: daysInPrev - i,
+            month: calMonth - 1,
+            year: calYear,
+            other: true,
+          });
+        }
+        // This month
+        for (let d = 1; d <= daysInMonth; d++) {
+          cells.push({ day: d, month: calMonth, year: calYear, other: false });
+        }
+        // Next month filler
+        const remainder = 7 - (cells.length % 7);
+        if (remainder < 7) {
+          for (let d = 1; d <= remainder; d++) {
+            cells.push({
+              day: d,
+              month: calMonth + 1,
+              year: calYear,
+              other: true,
+            });
+          }
+        }
+
+        const grid = document.getElementById("cal-grid");
+        grid.innerHTML = cells
+          .map((cell) => {
+            const m = cell.month < 0 ? 11 : cell.month > 11 ? 0 : cell.month;
+            const y =
+              cell.month < 0
+                ? cell.year - 1
+                : cell.month > 11
+                  ? cell.year + 1
+                  : cell.year;
+            const key = dateKey(y, m, cell.day);
+            const cellDate = new Date(y, m, cell.day);
+            cellDate.setHours(0, 0, 0, 0);
+
+            const isFuture = cellDate > today;
+            const isToday = cellDate.getTime() === today.getTime();
+            const isOther = cell.other;
+            const verbsHere = map[key] || [];
+            const hasVerbs = verbsHere.length > 0;
+            const isMissed =
+              !hasVerbs && !isFuture && !isOther && cellDate < today;
+
+            // Pick emoji
+            let emoji = "";
+            if (isToday && !hasVerbs) emoji = "😐";
+            else if (isToday && hasVerbs) emoji = "🌟";
+            else if (hasVerbs) emoji = verbsHere.length >= 10 ? "🔥" : "😊";
+            else if (isMissed) emoji = "😢";
+
+            const classes = [
+              "cal-day",
+              isOther ? "other-month" : "",
+              hasVerbs ? "has-verbs" : "",
+              isMissed ? "missed" : "",
+              isToday ? "today-marker" : "",
+              isFuture ? "future" : "",
+              selectedDayKey === key ? "today-marker" : "",
+            ]
+              .filter(Boolean)
+              .join(" ");
+
+            const clickAttr =
+              hasVerbs && !isOther ? `onclick="showDayDetail('${key}')"` : "";
+
+            return `
+      <div class="${classes}" ${clickAttr} title="${hasVerbs ? verbsHere.length + " verb" : isMissed ? "Tidak ada belajar 😢" : ""}">
+        <div class="cal-date-num">${cell.day}</div>
+        ${emoji ? `<div class="cal-emoji">${emoji}</div>` : ""}
+        ${hasVerbs ? `<div class="cal-verb-count">${verbsHere.length}v</div>` : ""}
+      </div>
+    `;
+          })
+          .join("");
+      }
+
+      function showDayDetail(key) {
+        selectedDayKey = selectedDayKey === key ? null : key;
+        const wrap = document.getElementById("day-detail-wrap");
+        if (!selectedDayKey) {
+          wrap.innerHTML = "";
+          renderCalendar();
+          return;
+        }
+
+        renderCalendar(); // re-render to show selection
+        const map = buildDateMap();
+        const verbs = map[key] || [];
+        const [y, m, d] = key.split("-").map(Number);
+        const label = `${d} ${MONTH_NAMES_ID[m - 1]} ${y}`;
+
+        wrap.innerHTML = `
+    <div class="day-detail">
+      <h4>📅 ${label} — ${verbs.length} verb dipelajari</h4>
+      <div class="day-detail-verbs">
+        ${verbs
+          .map(
+            (v) => `
+          <div class="verb-pill">
+            ${esc(v.base)}
+            ${v.meaning ? `<span>${esc(v.meaning)}</span>` : ""}
+          </div>
+        `,
+          )
+          .join("")}
+      </div>
+    </div>
+  `;
+      }
+
+      function calPrev() {
+        calMonth--;
+        if (calMonth < 0) {
+          calMonth = 11;
+          calYear--;
+        }
+        selectedDayKey = null;
+        document.getElementById("day-detail-wrap").innerHTML = "";
+        renderCalendar();
+      }
+
+      function calNext() {
+        calMonth++;
+        if (calMonth > 11) {
+          calMonth = 0;
+          calYear++;
+        }
+        selectedDayKey = null;
+        document.getElementById("day-detail-wrap").innerHTML = "";
+        renderCalendar();
       }
 
       // ════════════════════════════════════
