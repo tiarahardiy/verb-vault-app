@@ -440,7 +440,7 @@
 
       .verb-row {
         display: grid;
-        grid-template-columns: 40px 1fr 1fr 1fr 1fr auto;
+        grid-template-columns: 40px 1fr 1fr 2fr auto;
         gap: 10px;
         align-items: center;
         animation: slideIn 0.3s ease both;
@@ -572,7 +572,7 @@
 
       .list-header {
         display: grid;
-        grid-template-columns: 40px 1fr 1fr 1fr 1fr;
+        grid-template-columns: 40px 1fr 1fr 2fr;
         padding: 12px 20px;
         background: var(--surface2);
         border-bottom: 1px solid var(--border);
@@ -585,7 +585,7 @@
 
       .verb-item {
         display: grid;
-        grid-template-columns: 40px 1fr 1fr 1fr 1fr;
+        grid-template-columns: 40px 1fr 1fr 2fr;
         padding: 14px 20px;
         border-bottom: 1px solid rgba(42, 42, 50, 0.5);
         font-size: 14px;
@@ -615,6 +615,12 @@
       .verb-meaning {
         color: var(--accent3);
         font-size: 13px;
+      }
+      .verb-example {
+        color: var(--text2);
+        font-size: 12px;
+        font-style: italic;
+        opacity: 0.85;
       }
 
       .empty-state {
@@ -832,7 +838,7 @@
 
       .review-table-header {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr 80px;
+        grid-template-columns: 1fr 1fr 2fr 80px;
         padding: 12px 20px;
         background: var(--surface2);
         border-bottom: 1px solid var(--border);
@@ -844,7 +850,7 @@
 
       .review-item {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr 80px;
+        grid-template-columns: 1fr 1fr 2fr 80px;
         padding: 14px 20px;
         border-bottom: 1px solid rgba(42, 42, 50, 0.5);
         font-size: 13px;
@@ -1232,30 +1238,39 @@
         .stat-row {
           grid-template-columns: 1fr 1fr;
         }
+        /* mobile: show all 3 input columns (base, arti, contoh) */
         .verb-row {
-          grid-template-columns: 30px 1fr 1fr;
+          grid-template-columns: 28px 1fr 1fr;
+          flex-wrap: wrap;
         }
-        .verb-row .input-group:nth-child(4),
-        .verb-row .input-group:nth-child(5) {
-          display: none;
+        .verb-row .input-group:nth-child(4) {
+          grid-column: 2 / -1;
         }
+        /* list: show num + base + arti + contoh (all 4 columns) */
         .list-header,
         .verb-item {
-          grid-template-columns: 30px 1fr 1fr;
+          grid-template-columns: 28px 1fr 1fr;
         }
-        .list-header span:nth-child(n + 4),
-        .verb-item span:nth-child(n + 4) {
-          display: none;
+        .list-header span:nth-child(4),
+        .verb-item span:nth-child(4) {
+          grid-column: 2 / -1;
+          font-style: italic;
+          font-size: 11px;
+          padding-top: 0;
         }
+        /* review table: base + arti + hari, contoh wrap to next line */
         .review-table-header,
         .review-item {
-          grid-template-columns: 1fr 1fr 80px;
+          grid-template-columns: 1fr 1fr 60px;
         }
         .review-table-header span:nth-child(3),
-        .review-item span:nth-child(3),
-        .review-table-header span:nth-child(4),
-        .review-item span:nth-child(4) {
-          display: none;
+        .review-item span:nth-child(3) {
+          grid-column: 1 / -1;
+          font-style: italic;
+          font-size: 11px;
+          color: var(--text2);
+          padding-top: 0;
+          opacity: 0.8;
         }
       }
     </style>
@@ -1481,8 +1496,8 @@
             </div>
             <div class="verb-list">
               <div class="list-header">
-                <span>#</span><span>Base</span><span>Past</span
-                ><span>Past Part.</span><span>Arti</span>
+                <span>#</span><span>Verb</span><span>Arti</span
+                ><span>Contoh Kalimat</span>
               </div>
               <div id="today-list"></div>
             </div>
@@ -1551,8 +1566,8 @@
           </div>
           <div class="review-table">
             <div class="review-table-header">
-              <span>Base Form</span><span>Past Tense</span
-              ><span>Past Participle</span><span>Arti</span><span>Hari</span>
+              <span>Verb</span><span>Arti</span
+              ><span>Contoh Kalimat</span><span>Hari</span>
             </div>
             <div id="history-list"></div>
           </div>
@@ -1584,8 +1599,8 @@
             </div>
             <div class="review-table">
               <div class="review-table-header">
-                <span>Base Form</span><span>Past Tense</span
-                ><span>Past Participle</span><span>Arti</span><span>Hari</span>
+                <span>Verb</span><span>Arti</span
+                ><span>Contoh Kalimat</span><span>Hari</span>
               </div>
               <div id="saturday-review-list"></div>
             </div>
@@ -1812,20 +1827,16 @@
         row.innerHTML = `
     <div class="row-num">${String(idx).padStart(2, "0")}</div>
     <div class="input-group">
-      <div class="input-label">Base</div>
+      <div class="input-label">Verb</div>
       <input class="verb-input base-input" placeholder="go" />
-    </div>
-    <div class="input-group">
-      <div class="input-label">Past</div>
-      <input class="verb-input past-input" placeholder="went" />
-    </div>
-    <div class="input-group">
-      <div class="input-label">Past Part.</div>
-      <input class="verb-input pp-input" placeholder="gone" />
     </div>
     <div class="input-group">
       <div class="input-label">Arti</div>
       <input class="verb-input meaning-input" placeholder="pergi" />
+    </div>
+    <div class="input-group">
+      <div class="input-label">Contoh Kalimat <span style="opacity:0.5;font-size:9px">(opsional)</span></div>
+      <input class="verb-input example-input" placeholder="I go to school every day." />
     </div>
     <button class="remove-btn" onclick="this.closest('.verb-row').remove()">×</button>
   `;
@@ -1837,9 +1848,8 @@
         let added = 0;
         rows.forEach((row) => {
           const base = row.querySelector(".base-input").value.trim();
-          const past = row.querySelector(".past-input").value.trim();
-          const pp = row.querySelector(".pp-input").value.trim();
           const meaning = row.querySelector(".meaning-input").value.trim();
+          const example = row.querySelector(".example-input").value.trim();
           if (!base) return;
 
           // Check duplicate for today
@@ -1853,9 +1863,8 @@
           appData.verbs.push({
             id: Date.now() + Math.random(),
             base,
-            past,
-            pp,
             meaning,
+            example,
             day: currentDayIndex,
             dayName: DAY_NAMES[currentDayIndex],
             addedAt: new Date().toISOString(),
@@ -1893,9 +1902,8 @@
     <div class="verb-item">
       <span class="verb-item-num">${String(i + 1).padStart(2, "0")}</span>
       <span class="verb-base">${esc(v.base)}</span>
-      <span class="verb-col">${esc(v.past || "—")}</span>
-      <span class="verb-col">${esc(v.pp || "—")}</span>
       <span class="verb-meaning">${esc(v.meaning || "—")}</span>
+      <span class="verb-example">${esc(v.example || "—")}</span>
     </div>
   `,
           )
@@ -1914,9 +1922,8 @@
             (v) => `
     <div class="review-item">
       <span class="verb-base">${esc(v.base)}</span>
-      <span class="verb-col">${esc(v.past || "—")}</span>
-      <span class="verb-col">${esc(v.pp || "—")}</span>
       <span class="verb-meaning">${esc(v.meaning || "—")}</span>
+      <span class="verb-example">${esc(v.example || "—")}</span>
       <span><div class="day-chip">${esc(v.dayName || "?")}</div></span>
     </div>
   `,
@@ -1938,9 +1945,8 @@
             (v) => `
     <div class="review-item">
       <span class="verb-base">${esc(v.base)}</span>
-      <span class="verb-col">${esc(v.past || "—")}</span>
-      <span class="verb-col">${esc(v.pp || "—")}</span>
       <span class="verb-meaning">${esc(v.meaning || "—")}</span>
+      <span class="verb-example">${esc(v.example || "—")}</span>
       <span><div class="day-chip">${esc(v.dayName || "?")}</div></span>
     </div>
   `,
