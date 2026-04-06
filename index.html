@@ -848,6 +848,10 @@
         letter-spacing: 0.8px;
       }
 
+      .review-table-header.with-actions {
+        grid-template-columns: 1fr 1fr 2fr 70px 80px;
+      }
+
       .review-item {
         display: grid;
         grid-template-columns: 1fr 1fr 2fr 80px;
@@ -856,6 +860,9 @@
         font-size: 13px;
         align-items: center;
         transition: background 0.15s;
+      }
+      .review-item.with-actions {
+        grid-template-columns: 1fr 1fr 2fr 70px 80px;
       }
       .review-item:hover {
         background: var(--surface2);
@@ -872,6 +879,123 @@
         border: 1px solid var(--border);
         color: var(--text3);
         width: fit-content;
+      }
+
+      /* ── HISTORY ACTIONS ── */
+      .history-actions {
+        display: flex;
+        gap: 6px;
+        justify-content: center;
+      }
+
+      .action-btn {
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 13px;
+        transition: all 0.2s;
+        color: var(--text3);
+        line-height: 1;
+      }
+
+      .action-btn:hover {
+        transform: translateY(-1px);
+      }
+
+      .action-btn.edit-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+        background: rgba(212, 160, 23, 0.1);
+        box-shadow: 0 0 12px rgba(212, 160, 23, 0.15);
+      }
+
+      .action-btn.delete-btn:hover {
+        border-color: var(--danger);
+        color: var(--danger);
+        background: rgba(232, 88, 88, 0.1);
+        box-shadow: 0 0 12px rgba(232, 88, 88, 0.15);
+      }
+
+      /* ── EDIT MODAL ── */
+      .edit-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(6px);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.2s ease;
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+
+      .edit-modal {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 32px;
+        width: min(440px, 90vw);
+        box-shadow: var(--shadow);
+        animation: floatIn 0.3s cubic-bezier(0.22, 0.68, 0, 1.2) both;
+      }
+
+      .edit-modal h3 {
+        font-family: "Playfair Display", serif;
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 24px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .edit-modal .edit-field {
+        margin-bottom: 16px;
+      }
+
+      .edit-modal .edit-field label {
+        display: block;
+        font-size: 11px;
+        color: var(--text3);
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin-bottom: 6px;
+        font-weight: 500;
+      }
+
+      .edit-modal .edit-field input {
+        width: 100%;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 11px 14px;
+        color: var(--text);
+        font-family: "DM Sans", sans-serif;
+        font-size: 14px;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+
+      .edit-modal .edit-field input:focus {
+        border-color: var(--accent);
+      }
+
+      .edit-modal .edit-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 24px;
+        justify-content: flex-end;
       }
 
       /* ── GAME RESULT ── */
@@ -1282,6 +1406,10 @@
         .review-item {
           grid-template-columns: 1fr 1fr 60px;
         }
+        .review-table-header.with-actions,
+        .review-item.with-actions {
+          grid-template-columns: 1fr 1fr 60px 70px;
+        }
         .review-table-header span:nth-child(3),
         .review-item span:nth-child(3) {
           grid-column: 1 / -1;
@@ -1290,6 +1418,14 @@
           color: var(--text2);
           padding-top: 0;
           opacity: 0.8;
+        }
+        .review-table-header.with-actions span:nth-child(3),
+        .review-item.with-actions span:nth-child(3) {
+          grid-column: auto;
+        }
+        .review-item.with-actions span:nth-child(5) {
+          grid-column: -2 / -1;
+          justify-self: center;
         }
       }
     </style>
@@ -1584,9 +1720,9 @@
             <p class="section-subtitle">Semua Vocab yang telah kamu pelajari</p>
           </div>
           <div class="review-table">
-            <div class="review-table-header">
+            <div class="review-table-header with-actions">
               <span>Vocab</span><span>Arti</span><span>Contoh Kalimat</span
-              ><span>Hari</span>
+              ><span>Hari</span><span style="text-align:center">Aksi</span>
             </div>
             <div id="history-list"></div>
           </div>
@@ -1945,15 +2081,94 @@
         el.innerHTML = sorted
           .map(
             (v) => `
-    <div class="review-item">
+    <div class="review-item with-actions">
       <span class="verb-base">${esc(v.base)}</span>
       <span class="verb-meaning">${esc(v.meaning || "—")}</span>
       <span class="verb-example">${esc(v.example || "—")}</span>
       <span><div class="day-chip">${esc(v.dayName || "?")}</div></span>
+      <span class="history-actions">
+        <button class="action-btn edit-btn" onclick="editVerb(${v.id})" title="Edit">✏️</button>
+        <button class="action-btn delete-btn" onclick="deleteVerb(${v.id})" title="Hapus">🗑️</button>
+      </span>
     </div>
   `,
           )
           .join("");
+      }
+
+      function deleteVerb(id) {
+        if (!confirm('Yakin ingin menghapus vocab ini?')) return;
+        appData.verbs = appData.verbs.filter(v => v.id !== id);
+        saveData(appData);
+        updateUI();
+        showToast('🗑️ Vocab berhasil dihapus', 'success');
+      }
+
+      function editVerb(id) {
+        const verb = appData.verbs.find(v => v.id === id);
+        if (!verb) return;
+
+        const overlay = document.createElement('div');
+        overlay.className = 'edit-overlay';
+        overlay.id = 'edit-overlay';
+        overlay.innerHTML = `
+          <div class="edit-modal">
+            <h3>✏️ Edit Vocab</h3>
+            <div class="edit-field">
+              <label>Vocab</label>
+              <input type="text" id="edit-base" value="${esc(verb.base)}" />
+            </div>
+            <div class="edit-field">
+              <label>Arti</label>
+              <input type="text" id="edit-meaning" value="${esc(verb.meaning || '')}" />
+            </div>
+            <div class="edit-field">
+              <label>Contoh Kalimat <span style="opacity:0.5;font-size:9px">(opsional)</span></label>
+              <input type="text" id="edit-example" value="${esc(verb.example || '')}" />
+            </div>
+            <div class="edit-actions">
+              <button class="btn btn-secondary" onclick="closeEditModal()">Batal</button>
+              <button class="btn btn-primary" onclick="saveEditVerb(${id})">💾 Simpan</button>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(overlay);
+
+        // Close on overlay click (outside modal)
+        overlay.addEventListener('click', (e) => {
+          if (e.target === overlay) closeEditModal();
+        });
+
+        // Focus on first input
+        setTimeout(() => document.getElementById('edit-base').focus(), 100);
+      }
+
+      function closeEditModal() {
+        const overlay = document.getElementById('edit-overlay');
+        if (overlay) overlay.remove();
+      }
+
+      function saveEditVerb(id) {
+        const base = document.getElementById('edit-base').value.trim();
+        const meaning = document.getElementById('edit-meaning').value.trim();
+        const example = document.getElementById('edit-example').value.trim();
+
+        if (!base) {
+          showToast('Vocab tidak boleh kosong', 'error');
+          return;
+        }
+
+        const verb = appData.verbs.find(v => v.id === id);
+        if (!verb) return;
+
+        verb.base = base;
+        verb.meaning = meaning;
+        verb.example = example;
+
+        saveData(appData);
+        closeEditModal();
+        updateUI();
+        showToast('✅ Vocab berhasil diperbarui!', 'success');
       }
 
       function renderSaturdayReview() {
